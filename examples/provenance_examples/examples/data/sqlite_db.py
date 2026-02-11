@@ -37,10 +37,11 @@ def index_to_sqlite(df, db_path):
         df.to_sql("movies", conn, if_exists="replace", index=False)
     print("Database indexing complete.")
 
-def get_data_from_sql_as_dict(db_path, limit=None):
+def get_data_from_sql_as_dict(db_path = DB_PATH, limit=None):
     """
     Reads the data back from SQLite and returns it as a Python dictionary.
     """
+    print(f"Retrieving data from SQLite database at {db_path}...")
     print("Querying SQLite and converting to dictionary...")
     with sqlite3.connect(db_path) as conn:
         query = "SELECT * FROM movies"

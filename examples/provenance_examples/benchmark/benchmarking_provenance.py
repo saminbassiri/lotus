@@ -13,7 +13,7 @@ import pandas as pd
 
 import lotus
 from mock_lm import MockLM
-from lotus.data_connectors import DataConnector
+from examples.provenance_examples.examples.data.sqlite_db import DB_PATH, get_data_from_sql_as_dict
 
 from examples.provenance_examples.examples.sem_filter_sem_agg import filter_agg_movie_reviews
 from examples.provenance_examples.examples.sem_join_sem_filter import join_filter_movie_reviews
@@ -41,6 +41,7 @@ def benchmark_provenance_overhead(usecase_id, n_iterations=3):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            print(f"\n=== Starting benchmark for use case: {usecase_id} ===")
             original_df = args[0]
             current_df = original_df
 
@@ -161,7 +162,7 @@ def set_benchmark_env():
     lotus.settings.configure(lm=lm)
 
 
-def get_data_sql(db_path):
+def get_data_sql(db_path= DB_PATH, limit=1000):
     """
     Select all columns from database table.
     Set query to load data and the database path.
@@ -172,11 +173,7 @@ def get_data_sql(db_path):
         db_path (str): Path to the database.
         Example: "sqlite:///path/to/database.db"
     """
-    query = "SELECT * FROM short_text_reviews;"
-    data = DataConnector.load_from_db(db_path, query=query)
-    data.attrs["dataset_name"] = db_path.split("/")[-1]
-    return data
-
+    return pd.DataFrame(get_data_from_sql_as_dict(db_path, limit=limit))
 
 def get_csv_data(file_path):
     data = pd.read_csv(file_path)
@@ -290,9 +287,9 @@ def test_topk_movie_reviews(df, use_prov=False, debug=False):
 if __name__ == "__main__":
     set_benchmark_env()
     # Set correct db path and query first to load from the correct database table
-    df = get_data_sql("sqlite:///../examples/db_examples/imdb_reviews.db")
-    row_limits = [100]
+    row_limits = [10, 100, 500]
     for limit in row_limits:
+        df = get_data_sql(limit=limit)
         test_extract_filter_movie_reviews(df, debug=True, row_limit=limit)
         time.sleep(5)
         test_filter_agg_movie_reviews(df, debug=True, row_limit=limit)

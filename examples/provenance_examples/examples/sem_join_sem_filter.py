@@ -1,8 +1,11 @@
 import pandas as pd
 import lotus
 from lotus.models import LM
+from pathlib import Path
 
-from data.sqllite_db import get_data_from_sql_as_dict, DB_PATH
+BASE_DIR = Path(__file__).resolve().parent
+
+from examples.provenance_examples.examples.data.sqlite_db import get_data_from_sql_as_dict, DB_PATH
 
 lm = LM(model=f"ollama/llama3.2:3b")
 
@@ -43,7 +46,7 @@ def join_filter_movie_reviews(df, use_prov=False):
 
 if __name__ == "__main__":
 
-    data = get_data_from_sql_as_dict(DB_PATH, limit=5)
+    data = get_data_from_sql_as_dict(limit=5)
 
     df = pd.DataFrame(data)
     print(join_filter_movie_reviews(df, use_prov=True))
