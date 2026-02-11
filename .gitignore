@@ -12,3 +12,7 @@ docs/_build
 
 test_env/
 
+# Python virtual environments
+.venv/
+venv/
+ENV/
