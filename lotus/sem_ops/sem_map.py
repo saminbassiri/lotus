@@ -11,6 +11,15 @@ from lotus.utils import show_safe_mode
 from .postprocessors import map_postprocess
 
 
+def _unique_col_name(df: pd.DataFrame, base: str) -> str:
+    if base not in df.columns:
+        return base
+    i = 1
+    while f"{base}_{i}" in df.columns:
+        i += 1
+    return f"{base}_{i}"
+
+
 def sem_map(
     docs: list[dict[str, Any]],
     model: lotus.models.LM,
@@ -224,6 +233,8 @@ class SemMapDataframe:
         strategy: ReasoningStrategy | None = None,
         safe_mode: bool = False,
         progress_bar_desc: str = "Mapping",
+        provenance: bool = False,
+        provenance_col: str = "provenance_id",
         **model_kwargs: Any,
     ) -> pd.DataFrame:
         if lotus.settings.lm is None:
@@ -238,7 +249,14 @@ class SemMapDataframe:
             if column not in self._obj.columns:
                 raise ValueError(f"Column {column} not found in DataFrame")
 
-        multimodal_data = task_instructions.df2multimodal_info(self._obj, col_li)
+        df_in = self._obj.copy()
+
+        tmp_prov = None
+        if provenance:
+            tmp_prov = _unique_col_name(df_in, "provenance_id")
+            df_in[tmp_prov] = df_in.index
+
+        multimodal_data = task_instructions.df2multimodal_info(df_in, col_li)
         formatted_usr_instr = lotus.nl_expression.nle2str(user_instruction, col_li)
 
         examples_multimodal_data = None
@@ -275,5 +293,13 @@ class SemMapDataframe:
             new_df["explanation" + suffix] = output.explanations
         if return_raw_outputs:
             new_df["raw_output" + suffix] = output.raw_outputs
+
+        new_df = self._obj.copy()
+        new_df[suffix] = output.outputs
+
+        if provenance:
+            if provenance_col in new_df.columns:
+                raise ValueError(f"{provenance_col} already exists.")
+            new_df[provenance_col] = self._obj.index
 
         return new_df
