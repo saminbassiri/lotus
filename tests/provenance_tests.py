@@ -61,3 +61,28 @@ def test_sem_topk_provenance():
     assert res["provenance_id"].iloc[0] == 2
     # The second row should be Human (original index 0)
     assert res["provenance_id"].iloc[1] == 0
+
+def test_sem_extract_provenance():
+    df = pd.DataFrame({
+        "info": ["John is 30 years old", "Jane is 25 years old"]
+    })
+
+    extract_cols = {
+        "masked_col_1": "The name of the person",
+        "masked_col_2": "The age of the person",
+    }
+
+    res = df.sem_extract(["info"], extract_cols, provenance=True)
+    
+    assert len(res) == 2
+    
+    # Check if the provenance column exists (using your default name)
+    assert "provenance_id" in res.columns
+    
+    # Verify that index 0 maps to 0 and 1 maps to 1
+    assert res["provenance_id"].iloc[0] == 0
+    assert res["provenance_id"].iloc[1] == 1
+    
+    # Verify the extraction itself (simple content check)
+    assert "John" in str(res.iloc[0]["masked_col_1"])
+    assert "Jane" in str(res.iloc[1]["masked_col_1"])
