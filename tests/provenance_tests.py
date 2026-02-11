@@ -40,5 +40,24 @@ def test_sem_map_provenance():
     # In a map, provenance should match the current index 1:1
     assert res["provenance_id"].tolist() == [0, 1]
 
-if __name__ == "__main__":
-    test_sem_map_provenance()
+def test_sem_agg_provenance():
+    df = pd.DataFrame({"note": ["Bad", "Good", "Great"]})
+    res = df.sem_agg("Summarize these {note}", provenance=True)
+
+    # For aggregation, provenance_id is a list of the source indices
+    assert isinstance(res["provenance_id"].iloc[0], list)
+    assert 0 in res["provenance_id"].iloc[0]
+    assert 2 in res["provenance_id"].iloc[0]
+
+def test_sem_topk_provenance():
+    df = pd.DataFrame({"item": ["Human", "Ant", "Elephant"]})
+    # Sort by size (Elephant > Human > Ant)
+    res = df.sem_topk("Which is {item} larger?", K=2, provenance=True)
+    
+    # Check that we got 2 results    
+    assert len(res) == 2
+
+    # The first row should be Elephant (original index 2)
+    assert res["provenance_id"].iloc[0] == 2
+    # The second row should be Human (original index 0)
+    assert res["provenance_id"].iloc[1] == 0
