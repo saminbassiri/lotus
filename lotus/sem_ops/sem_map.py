@@ -298,8 +298,6 @@ class SemMapDataframe:
         new_df[suffix] = output.outputs
 
         if provenance:
-            if provenance_col in new_df.columns:
-                raise ValueError(f"{provenance_col} already exists.")
             new_df[provenance_col] = self._obj.index
 
         return new_df
