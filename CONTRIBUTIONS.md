@@ -45,6 +45,7 @@
 * Provenance tracking for sem-map and sem-join
   * lotus/sem_ops/sem_join.py
   * lotus/sem_ops/sem_map.py
+* Help with benchmarking
 * Help with presentation preparation
 ---
 
@@ -55,3 +56,4 @@
   * examples/provenance_examples/examples/sem_topk.py
 * Help with documentation and README.md
 * Presentation preparation main parts
+
