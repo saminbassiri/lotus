@@ -37,7 +37,7 @@ def topk_map_movie_reviews(df, use_prov=False):
         audiences,
         f"Would a {{target_audience:right}} member use the keywords {{{target_col}:left}}?",
         provenance=use_prov,
-        provenance_col=provenance_col,
+        provenance_left_col=provenance_col,
     )
     
     return bench_df

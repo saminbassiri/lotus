@@ -33,7 +33,7 @@ def join_filter_movie_reviews(df, use_prov=False):
         categories,
         "{review} primarily falls under the {category} style of writing. Only answer with the EXACT category.",
         provenance=use_prov,
-        provenance_col=provenance_col,
+        provenance_left_col=provenance_col,
     )
     bench_df = joined_df.sem_filter(
         "{key_quote} fits the {category} style",

@@ -59,7 +59,7 @@ def raw_data_to_df(dir_path) -> pd.DataFrame:
                 if line.strip():
                     data.append(json.loads(line))
     df = pd.json_normalize(data)
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    #df["timestamp"] = pd.to_datetime(df["timestamp"])
     return df
 
 
@@ -150,5 +150,5 @@ def generate_plots_from_df(df):
 
 if __name__ == "__main__":
     db_path = "benchmark_results.db"
-    raw_data_path = "results/raw_data/"
-    ingest_raw_data_sql(db_path, raw_data_path)
+    raw_data_path = ""
+    generate_plots_from_df(ingest_raw_data_sql(db_path, raw_data_path))

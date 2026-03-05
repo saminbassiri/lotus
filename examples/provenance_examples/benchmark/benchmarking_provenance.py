@@ -27,9 +27,8 @@ from examples.provenance_examples.examples.sem_extract import extract_movie_revi
 from examples.provenance_examples.examples.sem_map import map_movie_reviews
 
 
-
+RESULT_FILE = Path("provenance_benchmarks_results.jsonl")
 BENCHMARKING_MODEL = "ollama/llama3.2:3b"
-BENCHMARKING_SYSTEM = "32GB-RAM-MBP-FD"
 BENCHMARKING_SYSTEM = ""
 REVIEW_TEXT_LEN = 200
 RUN_ID = str(uuid.uuid4())[:8]
@@ -140,8 +139,8 @@ def benchmark_provenance_overhead(usecase_id, n_iterations=3):
                 },
             }
 
-            Path("results").mkdir(exist_ok=True)
-            with open(f"results/raw_data/{usecase_id}.jsonl", "a") as f:
+            RESULT_FILE.parent.mkdir(parents=True, exist_ok=True)
+            with open(RESULT_FILE, "a") as f:
                 f.write(json.dumps(log_entry) + "\n")
 
             if debug:
