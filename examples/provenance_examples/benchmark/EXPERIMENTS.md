@@ -37,7 +37,7 @@ Run the provided indexing script:
 pip install -r examples/provenance_examples/requirements.txt
 python examples/provenance_examples/examples/data/sqlite_db.py  
 ```
-## Benchmark steps:
+## Run Benchmark:
 Run this script for benchmark:
 
 ***Note***
@@ -50,6 +50,7 @@ Please set correct LLM for `BENCHMARKING_MODEL` in `benchmarking_provenance.py` 
 python examples/provenance_examples/benchmark/benchmarking_provenance.py
 ```
 
+## Benchmark steps:
 Recording Phase: The script first runs the query to fetch real LLM responses and stores them in the cache/ directory.
 
 Replay Phase: It then uses a MockLM to replay these cached responses, ensuring that "Vanilla" and "Provenance" runs use the exact same LLM outputs.
